@@ -16,7 +16,7 @@ And Success/Fail is the final result of the test
 I have inline comments explaining what the code does
 
 Sample Output:
-:::
+:::tip
 TEST 1 -----------------------------------------------------------------
 [Producer-1] Produced: 1 | Queue: [1]
 [Consumer-1] Consumed: 1 | Queue: []
