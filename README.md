@@ -70,6 +70,7 @@ I also made an assumption that the bed value == -999 just refers to invalid reco
 
 Sample output (The coords are of San Jose):
 
+```
  Top 5 Nearest Hospitals to 37.3387, -121.8853
                                                 NAME  ... DISTANCE_KM
 1630  CRESTWOOD SAN JOSE PSYCHIATRIC HEALTH FACILITY  ...    4.023655
@@ -79,3 +80,4 @@ Sample output (The coords are of San Jose):
 2109                   KAISER FND HOSP - SANTA CLARA  ...   10.047575
 
 [5 rows x 5 columns]
+```
