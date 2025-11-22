@@ -64,7 +64,7 @@ class Consumer:
             if item is None:
                 break
             self.destination.append(item)
-            time.sleep(0.2)  # simulate artificial delay (without this the prints were instant which did not look good visually)
+            time.sleep(0.1)  # simulate artificial delay (without this the prints were instant which did not look good visually)
 
 
 # Basic controller will just use the objects I wrote 
@@ -79,7 +79,7 @@ class Controller:
             raise Exception("Please have more than 0 producer and consumer")
 
         if(num_producers > len(sources)):
-            print("INFO : Reducing number of producer threads to match source") # Warning liek spark 
+            print("INFO : Reducing number of producer threads to match source") # Warning like spark 
             self.num_producers = len(sources)
         
         self.destination = []
@@ -114,13 +114,8 @@ class Controller:
 
 
 def main():
-    sources = [
-        [1, 2, 3],
-        [4, 5, 6],
-    ]
-    controller = Controller(sources, capacity=3, num_producers=2, num_consumers=10)
-    controller.start()
-
+    import testing
+    testing.test1()
 
 if __name__ == "__main__":
     main()
