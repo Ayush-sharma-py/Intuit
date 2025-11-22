@@ -7,10 +7,15 @@ Setup is pretty simple just run the testing.py file from inside the Inuit direct
 Please see result.txt for the output related to each of the testcases I designed and ran. All the classes are in pattern.py/
 
 Producer-N is when any producer thread writes to the buffer
+
 Consumer-N is when any consumer gets from the buffer
+
 A None poison pill terminates them
+
 Queue is the buffer
+
 Destination is the final output 
+
 And Success/Fail is the final result of the test
 
 I have inline comments explaining what the code does
@@ -59,11 +64,13 @@ SUCCESS
 Dataset link -> https://www.kaggle.com/datasets/carlosaguayo/usa-hospitals
 
 I used this dataset because it is small in size enough to fit on github with enough data for analysis. Using this does not violate any licenses as it is a part of public data dump by the US Gov. 
+
 From Source: This dataset is provided by the Homeland Infrastructure Foundation-Level Data (HIFLD) without a license and for Public Use.
 
 I also wanted to really work with the lat and lon columns 
 
 It is really simple to run just run the main.py file and everything will be printed to console
+
 I also made an assumption that the bed value == -999 just refers to invalid record
 
 *Pretty fun: Change the coords on line 61 and 62 and run to see the nearest hospitals*
