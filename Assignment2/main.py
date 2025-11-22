@@ -51,6 +51,7 @@ def haversine(lat1, lon1, lat2, lon2):
     a = math.sin(d_phi/2)**2 + math.cos(phi1) * math.cos(phi2) * math.sin(d_lambda/2)**2
     c = 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a))
     return R * c
+##############################################################################
 
 def nearest_n_hospitals(df, lat, lon, n=5):
     df["DISTANCE_KM"] = df.apply(lambda row: haversine(lat, lon, row["LATITUDE"], row["LONGITUDE"]), axis=1)

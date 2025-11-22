@@ -123,6 +123,9 @@ class Controller:
 def main():
     import testing
     testing.test1()
+    testing.test2()
+    testing.test3()
+    testing.test4()
 
 
 if __name__ == "__main__":
