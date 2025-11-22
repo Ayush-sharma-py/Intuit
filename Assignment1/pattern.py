@@ -121,13 +121,8 @@ class Controller:
 
 
 def main():
-    sources = [
-        [1, 2, 3],
-        [4, 5, 6],
-        [7, 8, 9]
-    ]
-    controller = Controller(sources, capacity=3, numProducers=2, numConsumers=3)
-    controller.start()
+    import testing
+    testing.test1()
 
 
 if __name__ == "__main__":
