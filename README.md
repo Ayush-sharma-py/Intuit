@@ -16,7 +16,7 @@ And Success/Fail is the final result of the test
 I have inline comments explaining what the code does
 
 Sample Output:
-``
+:::
 TEST 1 -----------------------------------------------------------------
 [Producer-1] Produced: 1 | Queue: [1]
 [Consumer-1] Consumed: 1 | Queue: []
@@ -52,9 +52,30 @@ TEST 1 -----------------------------------------------------------------
 [Consumer-5] Consumed: None | Queue: []
 Destination: [1, 4, 2, 5, 3, 6]
 SUCCESS
-``
+:::
+
 ## Assignment 2
 
 Dataset link -> https://www.kaggle.com/datasets/carlosaguayo/usa-hospitals
 
 I used this dataset because it is small in size enough to fit on github with enough data for analysis. Using this does not violate any licenses as it is a part of public data dump by the US Gov. 
+From Source: This dataset is provided by the Homeland Infrastructure Foundation-Level Data (HIFLD) without a license and for Public Use.
+
+I also wanted to really work with the lat and lon columns 
+
+It is really simple to run just run the main.py file and everything will be printed to console
+I also made an assumption that the bed value == -999 just refers to invalid record
+
+*Pretty fun: Change the coords on line 61 and 62 and run to see the nearest hospitals*
+
+Sample output (The coords are of San Jose):
+
+ Top 5 Nearest Hospitals to 37.3387, -121.8853
+                                                NAME  ... DISTANCE_KM
+1630  CRESTWOOD SAN JOSE PSYCHIATRIC HEALTH FACILITY  ...    4.023655
+670                     REGIONAL MEDICAL OF SAN JOSE  ...    4.151422
+2112                               O'CONNOR HOSPITAL  ...    4.844547
+1632               SANTA CLARA VALLEY MEDICAL CENTER  ...    5.098863
+2109                   KAISER FND HOSP - SANTA CLARA  ...   10.047575
+
+[5 rows x 5 columns]
