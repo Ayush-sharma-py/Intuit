@@ -65,35 +65,51 @@ class Consumer:
             if item is None:
                 break
             self.destination.append(item)
-            time.sleep(0.4)  # simulate artificial delay (without this the prints were instant which did not look good visually)
+            time.sleep(0.2)  # simulate artificial delay (without this the prints were instant which did not look good visually)
 
 
 # Basic controller will just use the objects I wrote 
 class Controller:
-    def __init__(self, source, capacity):
-        self.source = source
+    def __init__(self, sources, capacity, num_producers=2, num_consumers=2):
+        self.sources = sources
+        self.num_producers = num_producers
+        self.num_consumers = num_consumers
+
+        # Input validation
+        if(num_consumers < 1 or num_producers < 1):
+            raise Exception("Please have more than 0 producer and consumer")
+        
+
         self.destination = []
         self.sharedQueue = CustomQueue(capacity)
 
     def start(self):
-        producer = Producer(self.source, self.sharedQueue, name="Producer-1")
-        consumer = Consumer(self.sharedQueue, self.destination, name="Consumer-1")
+        producers = [] # keep track of prod
+        consumers = [] # keep track of cons
 
-        t1 = threading.Thread(target=producer.run)
-        t2 = threading.Thread(target=consumer.run)
+        for i in range(self.num_producers):
+            producer = Producer(self.sources[i % len(self.sources)], self.sharedQueue, name=f"Producer-{i+1}")
+            producers.append(threading.Thread(target=producer.run))
 
-        t1.start()
-        t2.start()
+        for i in range(self.num_consumers):
+            consumer = Consumer(self.sharedQueue, self.destination, name=f"Consumer-{i+1}")
+            consumers.append(threading.Thread(target=consumer.run))
 
-        t1.join()
-        t2.join()
+        for t in producers + consumers:
+            t.start()
 
-        print(f"Final Destination: {self.destination}")
+        for t in producers + consumers:
+            t.join()
+
+        print(f"Destination: {self.destination}")
 
 
 def main():
-    source = [1, 2, 3, 4, 5]
-    controller = Controller(source, capacity=2)
+    sources = [
+        [1, 2, 3],
+        [4, 5, 6],
+    ]
+    controller = Controller(sources, capacity=3, num_producers=3, num_consumers=3)
     controller.start()
 
 
