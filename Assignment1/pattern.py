@@ -20,36 +20,37 @@ class CustomQueue:
         self.items = threading.Semaphore(0)
         self.space = threading.Semaphore(capacity)
 
-    def put(self, item, thread_name):
+    def put(self, item, threadName):
         self.space.acquire() # Semaphore lock 0 or -1
 
         with self.lock:
             self.buffer.append(item)
-            print(f"[{thread_name}] Produced: {item} | Queue: {self.buffer}") # I added this to demonstrate visual adding
+            print(f"[{threadName}] Produced: {item} | Queue: {self.buffer}") # I added this to demonstrate visual adding
         
         self.items.release() # Signal sempahore
 
-    def get(self, thread_name):
+    def get(self, threadName):
         self.items.acquire() # Semaphore lock till capacity
 
         with self.lock:
             item = self.buffer.pop(0)
-            print(f"[{thread_name}] Consumed: {item} | Queue: {self.buffer}") # I added this to demonstrate visual getting
+            print(f"[{threadName}] Consumed: {item} | Queue: {self.buffer}") # I added this to demonstrate visual getting
         
         self.space.release() # Signal sempahore
         return item
 
 
 class Producer:
-    def __init__(self, source, sharedQueue, name="Producer"):
-        self.source = source
+    def __init__(self, sources, sharedQueue, name="Producer"):
+        self.sources = sources  # Can be a list of source lists
         self.sharedQueue = sharedQueue
         self.name = name # To add custom name like in ROS or Kafka
 
     def run(self):
-        for item in self.source:
-            time.sleep(0.1)  # simulate artificial delay (without this the prints were instant which did not look good visually)
-            self.sharedQueue.put(item, self.name)
+        for source in self.sources:
+            for item in source:
+                time.sleep(0.1)  # simulate artificial delay
+                self.sharedQueue.put(item, self.name)
 
 
 class Consumer:
@@ -64,23 +65,23 @@ class Consumer:
             if item is None:
                 break
             self.destination.append(item)
-            time.sleep(0.1)  # simulate artificial delay (without this the prints were instant which did not look good visually)
+            time.sleep(0.1)  # simulate artificial delay
 
 
 # Basic controller will just use the objects I wrote 
 class Controller:
-    def __init__(self, sources, capacity, num_producers=2, num_consumers=2):
+    def __init__(self, sources, capacity, numProducers=2, numConsumers=2):
         self.sources = sources
-        self.num_producers = num_producers
-        self.num_consumers = num_consumers
+        self.numProducers = numProducers
+        self.numConsumers = numConsumers
 
         # Input validation
-        if(num_consumers < 1 or num_producers < 1):
+        if(numConsumers < 1 or numProducers < 1):
             raise Exception("Please have more than 0 producer and consumer")
 
-        if(num_producers > len(sources)):
+        if(numProducers > len(sources)):
             print("INFO : Reducing number of producer threads to match source") # Warning like spark 
-            self.num_producers = len(sources)
+            self.numProducers = len(sources)
         
         self.destination = []
         self.sharedQueue = CustomQueue(capacity)
@@ -89,11 +90,17 @@ class Controller:
         producers = [] # keep track of prod
         consumers = [] # keep track of cons
 
-        for i in range(self.num_producers):
-            producer = Producer(self.sources[i % len(self.sources)], self.sharedQueue, name=f"Producer-{i+1}")
+        # Divide sources among producers evenly
+        sourcesPerProducer = [[] for _ in range(self.numProducers)]
+        for idx, source in enumerate(self.sources):
+            producerIdx = idx % self.numProducers
+            sourcesPerProducer[producerIdx].append(source)
+
+        for i in range(self.numProducers):
+            producer = Producer(sourcesPerProducer[i], self.sharedQueue, name=f"Producer-{i+1}")
             producers.append(threading.Thread(target=producer.run))
 
-        for i in range(self.num_consumers):
+        for i in range(self.numConsumers):
             consumer = Consumer(self.sharedQueue, self.destination, name=f"Consumer-{i+1}")
             consumers.append(threading.Thread(target=consumer.run))
 
@@ -104,7 +111,7 @@ class Controller:
             t.join()
 
         # After all producers are done, send one poison pill per consumer
-        for _ in range(self.num_consumers):
+        for _ in range(self.numConsumers):
             self.sharedQueue.put(None, "Controller")
 
         for t in consumers:
@@ -114,8 +121,14 @@ class Controller:
 
 
 def main():
-    import testing
-    testing.test1()
+    sources = [
+        [1, 2, 3],
+        [4, 5, 6],
+        [7, 8, 9]
+    ]
+    controller = Controller(sources, capacity=3, numProducers=2, numConsumers=3)
+    controller.start()
+
 
 if __name__ == "__main__":
     main()
