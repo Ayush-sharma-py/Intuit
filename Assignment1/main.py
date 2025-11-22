@@ -50,7 +50,6 @@ class Producer:
         for item in self.source:
             time.sleep(0.1)  # simulate artificial delay (without this the prints were instant which did not look good visually)
             self.sharedQueue.put(item, self.name)
-        self.sharedQueue.put(None, self.name)  # poison pill to tell consumer to stop
 
 
 class Consumer:
@@ -78,8 +77,11 @@ class Controller:
         # Input validation
         if(num_consumers < 1 or num_producers < 1):
             raise Exception("Please have more than 0 producer and consumer")
-        
 
+        if(num_producers > len(sources)):
+            print("INFO : Reducing number of producer threads to match source") # Warning liek spark 
+            self.num_producers = len(sources)
+        
         self.destination = []
         self.sharedQueue = CustomQueue(capacity)
 
@@ -98,7 +100,14 @@ class Controller:
         for t in producers + consumers:
             t.start()
 
-        for t in producers + consumers:
+        for t in producers:
+            t.join()
+
+        # After all producers are done, send one poison pill per consumer
+        for _ in range(self.num_consumers):
+            self.sharedQueue.put(None, "Controller")
+
+        for t in consumers:
             t.join()
 
         print(f"Destination: {self.destination}")
@@ -109,7 +118,7 @@ def main():
         [1, 2, 3],
         [4, 5, 6],
     ]
-    controller = Controller(sources, capacity=3, num_producers=3, num_consumers=3)
+    controller = Controller(sources, capacity=3, num_producers=2, num_consumers=10)
     controller.start()
 
 
