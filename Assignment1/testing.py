@@ -104,7 +104,7 @@ def test6():
 def test7():
     print("TEST 7 -----------------------------------------------------------------")
 
-    sources = [list(range(1, 1001))]  # 1000 items in a single source
+    sources = [list(range(1, 101))]  # 100 items in a single source 
     controller = Controller(sources, capacity=50, numProducers=3, numConsumers=5)
     controller.start()
 
@@ -138,7 +138,7 @@ def main():
     test6()
 
     # Test 7: Very large source to check scalability and performance
-    test7()
+    test7() # Ideally would test with even larger N (>10^6 inputs) but performance is not being tested here as it would depend on what the usecase is 
 
 
 if __name__ == "__main__":

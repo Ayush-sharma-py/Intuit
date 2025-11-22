@@ -49,7 +49,7 @@ class Producer:
     def run(self):
         for source in self.sources:
             for item in source:
-                time.sleep(0.1)  # simulate artificial delay
+                time.sleep(0.1)  # artificial delay so that it looks nice in testing
                 self.sharedQueue.put(item, self.name)
 
 
@@ -65,7 +65,7 @@ class Consumer:
             if item is None:
                 break
             self.destination.append(item)
-            time.sleep(0.1)  # simulate artificial delay
+            time.sleep(0.1)  # artificial delay so that it looks nice in testing
 
 
 # Basic controller will just use the objects I wrote 
